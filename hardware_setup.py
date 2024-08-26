@@ -1,59 +1,54 @@
-# pico_epaper_42.py on my PCB (non-standard connection)
+# esp32_setup.py Copy to target as color_setup.py
 
 # Released under the MIT License (MIT). See LICENSE.
-# Copyright (c) 2023 Peter Hinch
+# Copyright (c) 2020 Peter Hinch
 
-# This Hardware_setup.py is for # https://www.waveshare.com/pico-epaper-4.2.htm
-# wired to the Pico using the ribbon cable rather than the default socket.
-# This was to enable testing using my ILI9341 PCB and its pushbuttons.
-# Use commented-out code below if using the built-in Pico socket.
+# Pin nos. match my PCB for all displays.
 
-# WIRING
-# Pico      Display
-# GPIO Pin
-# 3v3  36   Vin
-# IO6   9   CLK  Hardware SPI0
-# IO7  10   DATA (AKA SI MOSI)
-# IO8  11   DC
-# IO9  12   Rst
-# Gnd  13   Gnd
-# IO10 14   CS
+# As written with commented-out lines, supports:
+# Adafruit 1.5" 128*128 OLED display: https://www.adafruit.com/product/1431
+# Adafruit 1.27" 128*96 display https://www.adafruit.com/product/1673
+# Adfruit 1.8" 128*160 Color TFT LCD display https://www.adafruit.com/product/358
+# Adfruit 1.44" 128*128 Color TFT LCD display https://www.adafruit.com/product/2088
+# Edit the driver import for other displays.
 
-# Pushbuttons are wired between the pin and Gnd
-# Pico pin  Meaning
-# 16        Operate current control
-# 17        Decrease value of current control
-# 18        Select previous control
-# 19        Select next control
-# 20        Increase value of current control
+# WIRING (Adafruit pin nos and names).
+# ESP   SSD
+# 3v3   Vin (10)
+# Gnd   Gnd (11)
+# IO6  DC (3 DC)
+# IO7  CS (5 OC OLEDCS)
+# IO10  Rst (4 R RESET)
+# IO2  CLK (2 CL SCK)  Hardware SPI1
+# IO3  DATA (1 SI MOSI)
 
-from machine import Pin, SPI, freq
+from machine import SPI, Pin
 import gc
-from drivers.epaper.pico_epaper_42 import EPD as SSD
-freq(250_000_000)  # RP2 overclock
-# Create and export an SSD instance
-prst = Pin(9, Pin.OUT, value=1)
-pcs = Pin(10, Pin.OUT, value=1)
-pdc = Pin(8, Pin.OUT, value=0)  # Arbitrary pins
-busy = Pin(15, Pin.IN)
-# Datasheet allows 10MHz
-spi = SPI(0, sck=Pin(6), mosi=Pin(7), miso=Pin(4), baudrate=10_000_000)
-gc.collect()  # Precaution before instantiating framebuf
 
-# Using normal socket connection default args apply
-# ssd = SSD()
-ssd = SSD(spi, pcs, pdc, prst, busy)
+# from drivers.ssd1351.ssd1351_generic import SSD1351 as SSD
+from drivers.st7735r.st7735r import ST7735R as SSD
+# from drivers.st7735r.st7735r144 import ST7735R as SSD
+# from drivers.st7735r.st7735r_4bit import ST7735R as SSD
+from gui.core.ugui import Display
+
+height = 80 + 24  # 由于ST7735默认分辨率和0.96寸屏幕分辨率不同，故增加偏移值24
+width = 160
+
+pdc = Pin(6, Pin.OUT, value=0)  # Arbitrary pins
+pcs = Pin(7, Pin.OUT, value=1)
+prst = Pin(10, Pin.OUT, value=1)
+# Hardware SPI on native pins for performance. Check DRIVERS.md for optimum baudrate.
+spi = SPI(1, 40_000_000, sck=Pin(2), mosi=Pin(3), miso=Pin(12))
 gc.collect()
-from gui.core.ugui import Display, quiet
-# quiet()
-# Create and export a Display instance
+# ssd = SSD(spi, pcs, pdc, prst, height=height)  # Must specify height for SSD1351
+ssd = SSD(spi, pcs, pdc, prst, height, width, True)  # The other Adafruit displays use defaults
+# On st7735r 1.8 inch display can exchange height and width for portrait mode. See docs.
+# The 1.44 inch display is symmetrical so this doesn't apply.
+
 # Define control buttons
-nxt = Pin(19, Pin.IN, Pin.PULL_UP)  # Move to next control
-sel = Pin(16, Pin.IN, Pin.PULL_UP)  # Operate current control
-prev = Pin(18, Pin.IN, Pin.PULL_UP)  # Move to previous control
-increase = Pin(20, Pin.IN, Pin.PULL_UP)  # Increase control's value
-decrease = Pin(17, Pin.IN, Pin.PULL_UP)  # Decrease control's value
-# display = Display(ssd, nxt, sel, prev)  # 3-button mode
-display = Display(ssd, nxt, sel, prev, increase, decrease)  # 5-button mode
-ssd.wait_until_ready()  # Blocking wait
-ssd.set_partial()  # Subsequent refreshes are partial
+nxt = Pin(5, Pin.IN, Pin.PULL_UP)  # Move to next control
+sel = Pin(4, Pin.IN, Pin.PULL_UP)  # Operate current control
+prev = Pin(9, Pin.IN, Pin.PULL_UP)  # Move to previous control
+increase = Pin(13, Pin.IN, Pin.PULL_UP)  # Increase control's value
+decrease = Pin(8, Pin.IN, Pin.PULL_UP)  # Decrease control's value
+display = Display(ssd, nxt, sel, prev, increase, decrease)
