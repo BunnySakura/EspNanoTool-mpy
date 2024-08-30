@@ -6,4 +6,4 @@
 
 import main
 
-# main.test()
+main.test()

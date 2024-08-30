@@ -26,29 +26,27 @@ from machine import SPI, Pin
 import gc
 
 # from drivers.ssd1351.ssd1351_generic import SSD1351 as SSD
-from drivers.st7735r.st7735r import ST7735R as SSD
+from st7735r096 import ST7735 as SSD
 # from drivers.st7735r.st7735r144 import ST7735R as SSD
 # from drivers.st7735r.st7735r_4bit import ST7735R as SSD
 from gui.core.ugui import Display
 
-height = 80 + 24  # 由于ST7735默认分辨率和0.96寸屏幕分辨率不同，故增加偏移值24
-width = 160
-
 pdc = Pin(6, Pin.OUT, value=0)  # Arbitrary pins
 pcs = Pin(7, Pin.OUT, value=1)
 prst = Pin(10, Pin.OUT, value=1)
+pbacklight = Pin(11, Pin.OUT, value=1)
 # Hardware SPI on native pins for performance. Check DRIVERS.md for optimum baudrate.
 spi = SPI(1, 40_000_000, sck=Pin(2), mosi=Pin(3), miso=Pin(12))
 gc.collect()
 # ssd = SSD(spi, pcs, pdc, prst, height=height)  # Must specify height for SSD1351
-ssd = SSD(spi, pcs, pdc, prst, height, width, True)  # The other Adafruit displays use defaults
+ssd = SSD(spi, prst, pdc, pcs, pbacklight, width=160, height=80, offset=None, rotate=1)  # The other Adafruit displays use defaults
 # On st7735r 1.8 inch display can exchange height and width for portrait mode. See docs.
 # The 1.44 inch display is symmetrical so this doesn't apply.
 
 # Define control buttons
-nxt = Pin(5, Pin.IN, Pin.PULL_UP)  # Move to next control
+nxt = Pin(9, Pin.IN, Pin.PULL_UP)  # Move to next control
 sel = Pin(4, Pin.IN, Pin.PULL_UP)  # Operate current control
-prev = Pin(9, Pin.IN, Pin.PULL_UP)  # Move to previous control
+prev = Pin(5, Pin.IN, Pin.PULL_UP)  # Move to previous control
 increase = Pin(13, Pin.IN, Pin.PULL_UP)  # Increase control's value
 decrease = Pin(8, Pin.IN, Pin.PULL_UP)  # Decrease control's value
 display = Display(ssd, nxt, sel, prev, increase, decrease)

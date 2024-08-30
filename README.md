@@ -1,5 +1,7 @@
 # micropython-micro-gui
 
+![demo.jpg](demo.jpg)
+
 This is a lightweight, portable, MicroPython GUI library for displays having
 drivers subclassed from `framebuf`. Written in Python it runs under a standard
 MicroPython firmware build. Options for data input comprise:

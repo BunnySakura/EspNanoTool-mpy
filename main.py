@@ -13,6 +13,9 @@ from gui.core.writer import CWriter
 # Font for CWriter
 import gui.fonts.arial10 as arial10
 from gui.core.colors import *
+from gui.widgets.textbox import Textbox
+
+from wifi_connect import WiFi
 
 
 class BaseScreen(Screen):
@@ -28,7 +31,17 @@ class BaseScreen(Screen):
         row = 10
         Label(wri, row, col, 'Simple Demo')
         row = 50
-        Button(wri, row, col, text='Yes', callback=my_callback, args=('Yes',))
+        wifi = WiFi()
+
+        def print_wifi(button, arg):
+            result = wifi.scan()
+            print(result)
+            text_box = Textbox(wri, 10, 10, 100, 3)
+            for i in result:
+                text_box.append(str(i[0], 'utf-8'))
+
+
+        Button(wri, row, col, text='Scan', callback=print_wifi, args=('Yes',))
         col += 110
         Button(wri, row, col, text='No', callback=my_callback, args=('No',))
         CloseButton(wri)  # Quit the application
@@ -41,3 +54,4 @@ def test():
 
 if __name__ == "__main__":
     test()
+

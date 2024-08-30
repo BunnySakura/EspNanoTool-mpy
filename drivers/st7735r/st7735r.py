@@ -31,7 +31,7 @@ from drivers.boolpalette import BoolPalette
 # dest:
 # <R02 R01 R00 0 G02 G01 G00 0> <B01 B00 0 0 R12 R11 R10 0> <G12 G11 G10 0 B11 B10 0 0>
 
-# @micropython.viper # ESP32-C3不支持
+@micropython.viper
 def _lcopy(dest:ptr8, source:ptr8, length:int):
     n = 0
     for x in range(0, length, 2):
