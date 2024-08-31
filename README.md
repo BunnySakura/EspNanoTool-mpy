@@ -613,7 +613,7 @@ those in `nano-gui`, included for convenience. Note the file
 The system is organised as a Python package with the root being `gui`. Core
 files in `gui/core` are:  
  * `colors.py` Constants including colors and shapes.
- * `ugui.py` The main GUI code.
+ * `ugui.py` The start GUI code.
  * `writer.py` Supports the `Writer` and `CWriter` classes.
 
 The `gui/primitives` directory contains the following files:  
@@ -3444,7 +3444,7 @@ experiment.
 ## Appendix 3 Cross compiling
 
 This addresses the case where a memory error occurs on import. There are better
-savings with frozen bytecode, but cross compiling the main program module saves
+savings with frozen bytecode, but cross compiling the start program module saves
 the compiler from having to compile a large module on the target hardware. The
 cross compiler is documented [here](https://github.com/micropython/micropython/blob/master/mpy-cross/README.md).
 

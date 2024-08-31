@@ -24,6 +24,6 @@ gc.collect()
 nxt = Pin(9, Pin.IN, Pin.PULL_UP)  # Move to next control
 sel = Pin(4, Pin.IN, Pin.PULL_UP)  # Operate current control
 prev = Pin(5, Pin.IN, Pin.PULL_UP)  # Move to previous control
-increase = Pin(13, Pin.IN, Pin.PULL_UP)  # Increase control's value
-decrease = Pin(8, Pin.IN, Pin.PULL_UP)  # Decrease control's value
+increase = Pin(8, Pin.IN, Pin.PULL_UP)  # Increase control's value
+decrease = Pin(13, Pin.IN, Pin.PULL_UP)  # Decrease control's value
 display = Display(ssd, nxt, sel, prev, increase, decrease)

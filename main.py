@@ -1,5 +1,3 @@
-# simple.py Minimal micro-gui demo.
-
 # Released under the MIT License (MIT). See LICENSE.
 # Copyright (c) 2021 Peter Hinch
 
@@ -7,49 +5,44 @@
 import hardware_setup  # Create a display instance
 from gui.core.ugui import Screen, ssd
 
-from gui.widgets import Label, Button, CloseButton
+from gui.widgets import Label, Button, CloseButton, Listbox
 from gui.core.writer import CWriter
 
 # Font for CWriter
 import gui.fonts.arial10 as arial10
 from gui.core.colors import *
-from gui.widgets.textbox import Textbox
 
-from wifi_connect import WiFi
+from wifi_connect import WiFiScreen
 
 
 class BaseScreen(Screen):
-
     def __init__(self):
-        def my_callback(button, arg):
-            print('Button pressed', arg)
-
         super().__init__()
         # verbose default indicates if fast rendering is enabled
         wri = CWriter(ssd, arial10, GREEN, BLACK)
-        col = 10
-        row = 10
-        Label(wri, row, col, 'Simple Demo')
-        row = 50
-        wifi = WiFi()
+        row = 2
+        col = 2
+        label = Label(wri, row, col, "EspNanoTool")
 
-        def print_wifi(button, arg):
-            result = wifi.scan()
-            print(result)
-            text_box = Textbox(wri, 10, 10, 100, 3)
-            for i in result:
-                text_box.append(str(i[0], 'utf-8'))
+        row = row + label.height + 4
 
-        Button(wri, row, col, text='Scan', callback=print_wifi, args=('Yes',))
-        col += 110
-        Button(wri, row, col, text='No', callback=my_callback, args=('No',))
+        def scr_wifi_connect(lb, cls_new_screen, writer):
+            Screen.change(cls_new_screen, args=[writer])
+
+        els = (
+            ("WiFi connect", scr_wifi_connect, (WiFiScreen, wri)),
+            ("test1", print, ("test1",)),
+            ("test2", print, ("test2",)),
+        )
+        Listbox(wri, row, col, elements=els, width=ssd.width - 4, bdcolor=RED)
+
         CloseButton(wri)  # Quit the application
 
 
-def test():
-    print('Simple demo: button presses print to REPL.')
+def start():
+    print("Main program starting...")
     Screen.change(BaseScreen)  # A class is passed here, not an instance.
 
 
 if __name__ == "__main__":
-    test()
+    start()
