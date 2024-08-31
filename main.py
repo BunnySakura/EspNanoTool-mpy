@@ -13,6 +13,7 @@ import gui.fonts.arial10 as arial10
 from gui.core.colors import *
 
 from wifi_connect import WiFiScreen
+from clock_scr import ClockScreen
 
 
 class BaseScreen(Screen):
@@ -29,9 +30,12 @@ class BaseScreen(Screen):
         def scr_wifi_connect(lb, cls_new_screen, writer):
             Screen.change(cls_new_screen, args=[writer])
 
+        def scr_clock(lb, cls_new_screen, writer):
+            Screen.change(cls_new_screen, args=[writer])
+
         els = (
             ("WiFi connect", scr_wifi_connect, (WiFiScreen, wri)),
-            ("test1", print, ("test1",)),
+            ("Clock", scr_clock, (ClockScreen, wri)),
             ("test2", print, ("test2",)),
         )
         Listbox(wri, row, col, elements=els, width=ssd.width - 4, bdcolor=RED)

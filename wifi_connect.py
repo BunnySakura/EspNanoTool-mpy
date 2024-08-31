@@ -1,5 +1,3 @@
-import gc
-
 import hardware_setup  # Create a display instance
 from gui.core.ugui import Screen, ssd
 
@@ -10,6 +8,7 @@ from gui.core.writer import CWriter
 import gui.fonts.arial10 as arial10
 from gui.core.colors import *
 
+import gc
 import network
 
 

@@ -8,3 +8,4 @@ mpremote cp gui/widgets/dialog.py :/lib/gui/widgets/dialog.py
 mpremote cp main.py :
 mpremote cp boot.py :
 mpremote cp wifi_connect.py :
+mpremote cp clock_scr.py :
