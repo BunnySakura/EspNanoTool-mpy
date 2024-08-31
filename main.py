@@ -40,7 +40,6 @@ class BaseScreen(Screen):
             for i in result:
                 text_box.append(str(i[0], 'utf-8'))
 
-
         Button(wri, row, col, text='Scan', callback=print_wifi, args=('Yes',))
         col += 110
         Button(wri, row, col, text='No', callback=my_callback, args=('No',))
@@ -54,4 +53,3 @@ def test():
 
 if __name__ == "__main__":
     test()
-

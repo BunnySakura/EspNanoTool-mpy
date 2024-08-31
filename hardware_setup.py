@@ -1,49 +1,26 @@
-# esp32_setup.py Copy to target as color_setup.py
-
-# Released under the MIT License (MIT). See LICENSE.
-# Copyright (c) 2020 Peter Hinch
-
-# Pin nos. match my PCB for all displays.
-
-# As written with commented-out lines, supports:
-# Adafruit 1.5" 128*128 OLED display: https://www.adafruit.com/product/1431
-# Adafruit 1.27" 128*96 display https://www.adafruit.com/product/1673
-# Adfruit 1.8" 128*160 Color TFT LCD display https://www.adafruit.com/product/358
-# Adfruit 1.44" 128*128 Color TFT LCD display https://www.adafruit.com/product/2088
-# Edit the driver import for other displays.
-
-# WIRING (Adafruit pin nos and names).
-# ESP   SSD
-# 3v3   Vin (10)
-# Gnd   Gnd (11)
-# IO6  DC (3 DC)
-# IO7  CS (5 OC OLEDCS)
-# IO10  Rst (4 R RESET)
-# IO2  CLK (2 CL SCK)  Hardware SPI1
-# IO3  DATA (1 SI MOSI)
-
 from machine import SPI, Pin
 import gc
 
-# from drivers.ssd1351.ssd1351_generic import SSD1351 as SSD
-from st7735r096 import ST7735 as SSD
-# from drivers.st7735r.st7735r144 import ST7735R as SSD
-# from drivers.st7735r.st7735r_4bit import ST7735R as SSD
+from st7735 import ST7735 as SSD
 from gui.core.ugui import Display
 
-pdc = Pin(6, Pin.OUT, value=0)  # Arbitrary pins
-pcs = Pin(7, Pin.OUT, value=1)
-prst = Pin(10, Pin.OUT, value=1)
-pbacklight = Pin(11, Pin.OUT, value=1)
-# Hardware SPI on native pins for performance. Check DRIVERS.md for optimum baudrate.
-spi = SPI(1, 40_000_000, sck=Pin(2), mosi=Pin(3), miso=Pin(12))
-gc.collect()
-# ssd = SSD(spi, pcs, pdc, prst, height=height)  # Must specify height for SSD1351
-ssd = SSD(spi, prst, pdc, pcs, pbacklight, width=160, height=80, offset=None, rotate=1)  # The other Adafruit displays use defaults
-# On st7735r 1.8 inch display can exchange height and width for portrait mode. See docs.
-# The 1.44 inch display is symmetrical so this doesn't apply.
+# 引脚定义
+pin_dc = Pin(6, Pin.OUT, value=0)
+pin_cs = Pin(7, Pin.OUT, value=1)
+pin_rst = Pin(10, Pin.OUT, value=1)
+pin_bl = Pin(11, Pin.OUT, value=1)
 
-# Define control buttons
+# 配置SPI接口和频率
+spi = SPI(1, 40_000_000, sck=Pin(2), mosi=Pin(3), miso=Pin(12))
+
+# 配置屏幕驱动
+ssd = SSD(
+    spi, pin_rst, pin_dc, pin_cs, pin_bl,
+    width=160, height=80, offset=None, rotate=1
+)
+gc.collect()
+
+# 配置按键
 nxt = Pin(9, Pin.IN, Pin.PULL_UP)  # Move to next control
 sel = Pin(4, Pin.IN, Pin.PULL_UP)  # Operate current control
 prev = Pin(5, Pin.IN, Pin.PULL_UP)  # Move to previous control
