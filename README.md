@@ -1,6 +1,10 @@
 # micropython-micro-gui
 
-![demo.jpg](demo.jpg)
+![main.jpg](demo_show%2Fmain.jpg)
+
+![wifi-scan.jpg](demo_show%2Fwifi-scan.jpg)
+
+![clock.jpg](demo_show%2Fclock.jpg)
 
 This is a lightweight, portable, MicroPython GUI library for displays having
 drivers subclassed from `framebuf`. Written in Python it runs under a standard
