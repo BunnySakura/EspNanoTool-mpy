@@ -1,4 +1,5 @@
 mpremote mip install "github:peterhinch/micropython-micro-gui"
+mpremote mip install("github:peterhinch/micropython-nano-gui/drivers")
 mpremote cp hardware_setup.py :
 mpremote cp st7735.py :
 mpremote cp gui/widgets/menu.py :/lib/gui/widgets/menu.py
